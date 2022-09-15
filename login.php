@@ -5,18 +5,30 @@ if(isset($_POST['login'])){
 
     if(empty($_POST['staffid']) || empty($_POST['staffpass'])){
 
-        echo "<script> window.alert('Please fill in the field')</script>";
-		echo"<script> window.location.href='index_admin.php'</script>";
+        //echo "<script> window.alert('Please fill in the field')</script>";
+		echo "<script> window.location.href='index_admin.php'</script>";
 
     }else{
-        $query="SELECT * FROM staff WHERE staffID='".$_POST['staffid']."' AND staffPass='".$_POST['staffpass']."'";
+        $query="SELECT * FROM user WHERE user_id = '".$_POST['staffid']."' AND user_pass = '".$_POST['staffpass']."'";
         $result=mysqli_query($con,$query);
 
-        if(mysqli_fetch_assoc($result)){
+        if($row=mysqli_fetch_assoc($result)){
             
-            session_start();
+            /*session_start();
             $_SESSION['user']=$_POST['staffid'];
-            echo"<script> window.location.href='index.php'</script>";
+            echo"<script> window.location.href='index.php'</script>";*/
+
+            $user_type = $row['user_type'];
+            
+            if($user_type==1){
+                session_start();
+                $_SESSION['staff']=$_POST['staffid'];
+                echo "<script> window.location.href='index.php'</script>";
+            }else{
+                session_start();
+                $_SESSION['admin']=$_POST['staffid'];
+                echo "<script> window.location.href='index.php'</script>";
+            }
 
         }else{
             echo "<script> window.alert('Invalid ID or Password')</script>";
@@ -40,12 +52,18 @@ if(isset($_POST['login'])){
                         </div>
                         <h4>i-Dasar | Majlis Bandaraya Kuantan</h4>
                         <h6 class="fw-light">Sign in to continue.</h6>
-                        <form method="post" class="pt-3">
+                        <form method="post" class="pt-3 form-group needs-validation">
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-lg" id="staffid" name="staffid" placeholder="Staff Id">
+                                <input type="text" class="form-control form-control-lg" id="staffid" name="staffid" placeholder="Staff Id" required>
+                                <div class="invalid-feedback">
+                                    Please enter your id
+                                </div>
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control form-control-lg" id="staffpass" name="staffpass" placeholder="Password">
+                                <input type="password" class="form-control form-control-lg" id="staffpass" name="staffpass" placeholder="Password" required>
+                                <div class="invalid-feedback">
+                                    Please enter your password
+                                </div>
                             </div>
                             <div class="d-grid gap-2 mt-3">
                                 <button type="submit" class="btn btn-block btn-primary" name="login">SIGN IN</a>
